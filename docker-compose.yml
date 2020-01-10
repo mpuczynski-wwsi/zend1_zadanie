@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+ zf:
+    build: .
+
+    ports:
+      - "8000:80"
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - .:/var/www
+    networks:
+      - zf1
+ db:
+      image: mysql/mysql-server:5.6
+      ports:
+         - "3306:3306"
+      restart: always
+      volumes:
+        -  testdb:/var/lib/mysql
+        - ./db:/docker-entrypoint-initdb.d/:ro
+
+      environment:
+              MYSQL_DATABASE: "test"
+              MYSQL_USER: "test"
+              MYSQL_PASSWORD: "test"
+              MYSQL_ROOT_PASSWORD: "root"
+      networks:
+        - zf1
+
+#  phpmyadmin:
+#    image: phpmyadmin/phpmyadmin
+#    container_name: phpmyadmin
+#    depends_on:
+#      - db
+#    restart: always
+#    ports:
+#      - "8080:80"
+#    environment:
+#       PMA_HOST: db
+#       MYSQL_ROOT_PASSWORD: root 
+#    networks:
+#      - zf1
+
+volumes:
+   testdb:
+
+networks:
+  zf1:
